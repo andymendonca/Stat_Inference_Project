@@ -1,0 +1,79 @@
+---
+title: "Statistical Inference Project - Part 2"
+author: "Andrew Mendonca"
+date: "July 28, 2017"
+output: pdf_document
+---
+
+## Overview
+This report will analyze the ToothGrowth data in the R datasets package.
+
+## Analysis
+1. Load the data and perform some exploratory data analyses
+
+Load the following library.
+
+```{r, echo = TRUE}
+library(ggplot2)
+```
+Load the data.
+
+```{r, echo = TRUE}
+data("ToothGrowth")
+```
+View all of the dataset variables.
+
+```{r, echo = TRUE}
+str(ToothGrowth)
+```
+Convert the variable dose from numeric to factor
+```{r, echo = TRUE}
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+```
+See the variable after conversion.
+```{r, echo = TRUE}
+str(ToothGrowth)
+```
+
+2. Provide a basic summary of the data.
+
+Summarize all stats for every single variable
+
+```{r, echo = TRUE}
+summary(ToothGrowth)
+```
+Display the first few rows of the ToothGrowth data.
+```{r, echo = TRUE}
+head(ToothGrowth)
+```
+
+3. Use confidence intervals and hypothesis tests to compare tooth growth by supp and dose.
+
+Compare tooth growth by supplement.
+```{r, echo = TRUE}
+t.test(len ~ supp, data = ToothGrowth)
+```
+The p-value is 0.06 and the confidence interval is 0. This means that we cannot ignore the
+null hypothesis that supplement types have no effect on tooth growth.
+
+Compare tooth growth by dose based on the different pairs of dose values.
+
+```{r, echo = TRUE}
+ToothGrowth_subdata <- subset(ToothGrowth, ToothGrowth$dose %in% cbind(1.0, 0.5))
+t.test(len ~ dose, data = ToothGrowth_subdata)
+ToothGrowth_subdata <- subset(ToothGrowth, ToothGrowth$dose %in% cbind(0.5, 2.0))
+t.test(len ~ dose, data = ToothGrowth_subdata)
+ToothGrowth_subdata <- subset(ToothGrowth, ToothGrowth$dose %in% cbind(1.0, 2.0))
+t.test(len ~ dose, data = ToothGrowth_subdata)
+```
+The p-value of each test is 0 and the confidence interval of each test is also 0.
+
+So, we can assume that the average tooth length increases with a higher dose, and thus,
+the null hypothesis is ignored.
+
+## Conclusions
+We made a few assumptions that the sample is representative of the population and the 
+distribution of the sample means follows the Central Limit Theorem.
+
+Based on the tests above, we conclude that the supplement delivery method does not have
+any effect on tooth growth, but higher dosages result in increased tooth length.
